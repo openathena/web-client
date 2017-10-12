@@ -1,8 +1,8 @@
 // TODO: use redux-actions lib
 
 export default {
-  incomingMessage: (data) => ({
+  incomingMessage: (payload) => ({
     type: 'websocket.incomingMessage',
-    payload: { data },
+    payload: payload,
   }),
 };

@@ -7,29 +7,28 @@ function createSocketChannel(socket) {
   // `eventChannel` takes a subscriber function
   // the subscriber function takes an `emit` argument to put messages onto the channel
   return eventChannel(emit => {
-    const messageHandler = (event) => {
-      // puts event payload into the channel
-      // this allows a Saga to take this payload from the returned channel
-      emit(event.payload);
-    };
-
     // setup the subscription
-    socket.on('message', messageHandler);
+    socket.onmessage = emit;
+
+    socket.onopen = function() {
+      socket.send(JSON.stringify({ type: 'OBSERVE' }));
+    };
 
     // the subscriber must return an unsubscribe function
     // this will be invoked when the saga calls `channel.close` method
     const unsubscribe = () => {
-      socket.off('message', messageHandler);
+      socket.close();
     };
 
     return unsubscribe;
   }, buffers.sliding(10));
 }
 
-function* handleEvent({ timestamp, event, data }) {
-  const json = yield call(JSON.parse, data);
+function* handleEvent(socketEvent) {
   // TODO: sort out ws events into meaningful redux actions
-  yield put(wsActions.incomingMessage(json));
+  const payload = yield call(JSON.parse, socketEvent.data);
+  payload.timestamp = socketEvent.timeStamp;
+  yield put(wsActions.incomingMessage(payload));
 }
 
 export default function*() {
@@ -37,7 +36,7 @@ export default function*() {
   const socketChannel = yield call(createSocketChannel, socket);
 
   while (true) {
-    const payload = yield take(socketChannel);
-    yield handleEvent(payload);
+    const event = yield take(socketChannel);
+    yield handleEvent(event);
   }
 }

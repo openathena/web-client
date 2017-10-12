@@ -1,7 +1,7 @@
 export default (state = [], { type, payload }) => {
   switch (type) {
     case 'websocket.incomingMessage':
-      return [...state, JSON.parse(payload.data)];
+      return [...state, payload];
     default:
       return state;
   }

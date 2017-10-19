@@ -1,10 +1,11 @@
 import { eventChannel, buffers } from 'redux-saga';
-import { take, put, call, all } from 'redux-saga/effects';
-import websocket from '../websocket';
-import wsActions from '../actions/websocket';
+import { call, fork, takeEvery } from 'redux-saga/effects';
+import ws from '../api/ws';
 
-const HISTORY = 'HISTORY';
-const EVENT = 'EVENT';
+function createConnection() {
+    // TODO: configurize
+    return new WebSocket('ws://localhost:43202');
+}
 
 function createSocketChannel(socket) {
   // `eventChannel` takes a subscriber function
@@ -29,24 +30,11 @@ function createSocketChannel(socket) {
   }, buffers.sliding(10));
 }
 
-function* handleEvent({type, data}) {
-  switch(type) {
-    case HISTORY:
-      yield all(data.map((event) => {
-        return handleEvent(event);
-      }));
-      break;
-    case EVENT:
-      yield put(wsActions.incomingMessage(data));
-  }
-}
-
 export default function*() {
-  const socket = yield call(websocket.createConnection);
+  const socket = yield call(createConnection);
   const socketChannel = yield call(createSocketChannel, socket);
 
-  while (true) {
-    const event = yield take(socketChannel);
-    yield handleEvent(event);
-  }
+  yield fork(takeEvery, 'AUTH_TEAM', ws.authTeam(socket));
+  yield fork(takeEvery, socketChannel, ws.handleEvent);
+
 }

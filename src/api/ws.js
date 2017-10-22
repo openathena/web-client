@@ -1,5 +1,4 @@
-import { call, put, all } from 'redux-saga/effects';
-import wsActions from '../actions/ws';
+import { call } from 'redux-saga/effects';
 
 function authTeam(socket) {
   return function* (action) {
@@ -12,31 +11,6 @@ function authTeam(socket) {
   };
 }
 
-function* handleEvent({type, data}) {
-  switch(type) {
-    case 'HISTORY':
-      yield all(data.map((event) => {
-        return handleEvent(event);
-      }));
-      break;
-    case 'EVENT':
-      yield all([
-        put(wsActions.incomingGameEvent(data)),  // RawEvents console
-        put(data)                                // event -> action { type, data }
-      ]);
-      break;
-    case 'RESET':
-      yield put(wsActions.reset());
-      break;
-    default:
-      console.log('Unknown socket event: ' + { type, data });
-      break;
-  }
-}
-
-
-
 export default {
-  authTeam,
-  handleEvent
+  authTeam
 };

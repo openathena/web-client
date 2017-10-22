@@ -1,5 +1,6 @@
 import { eventChannel, buffers } from 'redux-saga';
-import { call, fork, takeEvery } from 'redux-saga/effects';
+import { call, all, put, fork, takeEvery } from 'redux-saga/effects';
+import wsActions from '../actions/ws';
 import ws from '../api/ws';
 
 function createConnection() {
@@ -30,10 +31,32 @@ function createSocketChannel(socket) {
   }, buffers.sliding(10));
 }
 
+function* handleEvent({type, data}) {
+  switch(type) {
+    case 'HISTORY':
+      yield all(data.map((event) => {
+        return handleEvent(event);
+      }));
+      break;
+    case 'EVENT':
+      yield put({
+        type: data.type,
+        payload: { data: data.data, serverTime: data.serverTime }
+      });
+      break;
+    case 'RESET':
+      yield put(wsActions.reset());
+      break;
+    default:
+      console.log('Unknown socket event: ' + { type, data });
+      break;
+  }
+}
+
 export default function*() {
   const socket = yield call(createConnection);
   const socketChannel = yield call(createSocketChannel, socket);
 
   yield fork(takeEvery, 'AUTH', ws.authTeam(socket));
-  yield fork(takeEvery, socketChannel, ws.handleEvent);
+  yield fork(takeEvery, socketChannel, handleEvent);
 }

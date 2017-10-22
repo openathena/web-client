@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import RawEvents from './containers/RawEvents';
+import GameClientEvents from './containers/GameClientEvents';
 import CreateTeamForm from './containers/CreateTeamForm';
 import AuthTeamForm from './containers/AuthTeamForm';
 import StartGame from './containers/StartGame';
@@ -13,7 +13,7 @@ class App extends Component {
           <CreateTeamForm />
           <AuthTeamForm />
           <StartGame />
-          <RawEvents />
+          <GameClientEvents />
         </div>
       </Provider>
     );

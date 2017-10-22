@@ -20,7 +20,13 @@ function* handleEvent({type, data}) {
       }));
       break;
     case 'EVENT':
-      yield put(wsActions.incomingGameEvent(data));
+      yield all([
+        put(wsActions.incomingGameEvent(data)),  // RawEvents console
+        put(data)                                // event -> action { type, data }
+      ]);
+      break;
+    case 'RESET':
+      yield put(wsActions.reset());
       break;
     default:
       console.log('Unknown socket event: ' + { type, data });

@@ -34,7 +34,6 @@ export default function*() {
   const socket = yield call(createConnection);
   const socketChannel = yield call(createSocketChannel, socket);
 
-  yield fork(takeEvery, 'AUTH_TEAM', ws.authTeam(socket));
+  yield fork(takeEvery, 'AUTH', ws.authTeam(socket));
   yield fork(takeEvery, socketChannel, ws.handleEvent);
-
 }

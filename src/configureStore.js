@@ -3,12 +3,15 @@ import createSagaMiddleware from 'redux-saga';
 import reducer from './reducers';
 import sagas from './sagas';
 import { reducer as reduxFormReducer } from 'redux-form';
+import { routerReducer, routerMiddleware, push } from 'react-router-redux';
+import history from './configureHistory';
 
 const sagaMiddleware = createSagaMiddleware();
 
 export default function configureStore(initialState) {
   const middlewares = [
     sagaMiddleware,
+    routerMiddleware(history)
   ];
 
   const enhancers = [
@@ -24,7 +27,8 @@ export default function configureStore(initialState) {
   const store = createStore(
     combineReducers({
       game: reducer,
-      form: reduxFormReducer
+      form: reduxFormReducer,
+      router: routerReducer
     }),
     initialState,
     composeEnhancers(...enhancers)
@@ -38,6 +42,8 @@ export default function configureStore(initialState) {
       store.replaceReducer(newReducer);
     });
   }
+
+  store.dispatch(push('/lobby'));
 
   return store;
 }

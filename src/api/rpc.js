@@ -1,4 +1,5 @@
 import { call, put } from 'redux-saga/effects';
+import { push } from 'react-router-redux';
 
 function postRpc(action) {
   // TODO configurize host
@@ -27,7 +28,8 @@ function* startGame(action) {
   try {
     yield call(postRpc, action);
     yield put({ type: "START_GAME_SUCEEDED" });
-    // TOD status checks
+    yield put(push('/game'));
+    // TODO status checks
   } catch (e) {
     yield put({ type: "START_GAME_FAILED", message: e.message })
   }

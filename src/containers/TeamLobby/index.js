@@ -1,9 +1,9 @@
 import React from 'react';
 import rpcActions from '../../actions/rpc';
 import wsActions from '../../actions/ws';
+import ListTeams from '../Shared/ListTeams';
 import CreateTeamForm from './CreateTeamForm';
 import AuthTeamForm from './AuthTeamForm';
-import ListTeams from './ListTeams';
 import StartGame from './StartGame';
 
 function createTeam(newTeam, dispatch) {

@@ -2,7 +2,7 @@ import React from 'react';
 
 export default class ListTeamsView extends React.Component {
   render() {
-    const { teamLobby } = this.props;
+    const { currentTeam, teams } = this.props;
     return (
       <div>
         <h5>Teams</h5>
@@ -14,13 +14,13 @@ export default class ListTeamsView extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {teamLobby.teams && teamLobby.teams.map((team) => (
-              <tr key={Math.random()}>
+            {teams && teams.map((team) => (
+              <tr key={Math.random()} className={ currentTeam.id === team.id ? 'active' : 'inactive' }>
                 <td>
-                  {team.data.name}
+                  {team.name}
                 </td>
                 <td>
-                  {team.data.id}
+                  {team.id}
                 </td>
               </tr>
             ))}

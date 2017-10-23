@@ -16,6 +16,7 @@ function* createTeam(action) {
   try {
     const response = yield call(postRpc, action);
     const { teamId } = yield response.json();
+    // TODO status checks
     yield put({ type: "CREATE_TEAM_SUCCEEDED", teamId });
   } catch (e) {
     yield put({ type: "CREATE_TEAM_FAILED", message: e.message })
@@ -24,9 +25,9 @@ function* createTeam(action) {
 
 function* startGame(action) {
   try {
-    // FIXME do I need to check the response for anything?
     yield call(postRpc, action);
     yield put({ type: "START_GAME_SUCEEDED" });
+    // TOD status checks
   } catch (e) {
     yield put({ type: "START_GAME_FAILED", message: e.message })
   }

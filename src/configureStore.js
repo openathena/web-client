@@ -23,7 +23,7 @@ export default function configureStore(initialState) {
 
   const store = createStore(
     combineReducers({
-      reducers: reducer,
+      game: reducer,
       form: reduxFormReducer
     }),
     initialState,

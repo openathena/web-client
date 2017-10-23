@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import View from './View';
 
 const mapStateToProps = (state) => ({
-  rawEvents: state.rawEvents,
+  gameClientEvents: state.game.gameClientEvents,
 });
 
 export default connect(mapStateToProps)(View);

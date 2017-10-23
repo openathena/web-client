@@ -1,7 +1,8 @@
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import reducer from './reducers';
 import sagas from './sagas';
+import { reducer as reduxFormReducer } from 'redux-form';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -21,9 +22,12 @@ export default function configureStore(initialState) {
       window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose;
 
   const store = createStore(
-    reducer,
+    combineReducers({
+      game: reducer,
+      form: reduxFormReducer
+    }),
     initialState,
-    composeEnhancers(...enhancers),
+    composeEnhancers(...enhancers)
   );
 
   sagaMiddleware.run(sagas);

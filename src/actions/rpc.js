@@ -1,4 +1,4 @@
-import { createAction } from 'redux-actions'
+import { createAction } from 'redux-actions';
 
 export default {
   createTeam: createAction('CREATE_TEAM'),

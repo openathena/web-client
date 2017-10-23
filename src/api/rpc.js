@@ -13,6 +13,7 @@ function postRpc(action) {
 
 
 function* createTeam(action) {
+  console.log(action);
   try {
     const response = yield call(postRpc, action);
     const { teamId } = yield response.json();

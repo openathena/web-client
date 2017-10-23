@@ -2,14 +2,9 @@ import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import reducer from './reducers';
 import sagas from './sagas';
-import { createForms } from 'react-redux-form';
+import { reducer as reduxFormReducer } from 'redux-form';
 
 const sagaMiddleware = createSagaMiddleware();
-
-const initialTeam = {
-  name: '',
-  password: '',
-};
 
 export default function configureStore(initialState) {
   const middlewares = [
@@ -29,9 +24,7 @@ export default function configureStore(initialState) {
   const store = createStore(
     combineReducers({
       reducers: reducer,
-      ...createForms({
-        team: initialTeam
-      }),
+      form: reduxFormReducer
     }),
     initialState,
     composeEnhancers(...enhancers)

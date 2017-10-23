@@ -1,7 +1,9 @@
 export default (state = [], { type, payload }) => {
   switch (type) {
-    case 'websocket.incomingMessage':
-      return [...state, payload];
+    case 'TILE_UPDATED':
+      return [...state, payload.data];
+    case 'RESET':
+      return [];
     default:
       return state;
   }

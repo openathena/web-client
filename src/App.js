@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import RawEvents from './containers/RawEvents';
+import GameClientEvents from './containers/GameClientEvents';
+import TeamLobby from './containers/TeamLobby';
 
 class App extends Component {
   render() {
     return (
       <Provider store={this.props.store}>
-        <RawEvents />
+        <div>
+          <TeamLobby />
+          <GameClientEvents />
+        </div>
       </Provider>
     );
   }

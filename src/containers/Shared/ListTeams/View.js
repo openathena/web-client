@@ -5,7 +5,7 @@ export default class ListTeamsView extends React.Component {
     const { currentTeam, teams } = this.props;
     return (
       <div>
-        <h5>Teams</h5>
+        <h2>Teams</h2>
         <table>
           <thead>
             <tr>

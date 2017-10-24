@@ -12,7 +12,6 @@ function postRpc(action) {
 }
 
 function* createTeam(action) {
-  console.log(action);
   try {
     const response = yield call(postRpc, action);
     const { teamId } = yield response.json();
@@ -27,7 +26,7 @@ function* startGame(action) {
   try {
     yield call(postRpc, action);
     yield put({ type: "START_GAME_SUCEEDED" });
-    // TOD status checks
+    // TODO status checks
   } catch (e) {
     yield put({ type: "START_GAME_FAILED", message: e.message })
   }

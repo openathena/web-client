@@ -5,7 +5,7 @@ export default class GameClientEventsView extends React.Component {
     const { gameClientEvents } = this.props;
     return (
       <div>
-        <h1>Game Client Events (RPC requests/responses, Game Events)</h1>
+        <h2>Game Client Events</h2>
         {gameClientEvents && gameClientEvents.map((event) => (<div key={Math.random()}>{JSON.stringify(event, null, '  ')}</div>))}
       </div>
     );

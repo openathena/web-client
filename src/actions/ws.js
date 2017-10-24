@@ -1,8 +1,8 @@
 import { createAction } from 'redux-actions'
+import dispatchAction from './dispatchAction';
 
 export default {
-  authTeam: createAction('AUTH'),
-  reset: createAction('RESET')
+  authTeam: dispatchAction(createAction('AUTH')),
   // 'Implicit' Actions from Game Events
   //    - TEAM_CREATED
   //    - SUBMARINE_CREATED

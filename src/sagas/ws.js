@@ -1,6 +1,5 @@
 import { eventChannel, buffers } from 'redux-saga';
-import { call, all, put, fork, takeEvery } from 'redux-saga/effects';
-import wsActions from '../actions/ws';
+import { call, all, put, spawn, takeEvery } from 'redux-saga/effects';
 import ws from '../api/ws';
 
 function createConnection() {
@@ -12,13 +11,17 @@ function createSocketChannel(socket) {
   // `eventChannel` takes a subscriber function
   // the subscriber function takes an `emit` argument to put messages onto the channel
   return eventChannel(emit => {
-    // setup the subscription
-    socket.onmessage = function(socketEvent) {
-      emit(JSON.parse(socketEvent.data));
+
+    socket.onmessage = function(message) {
+      emit(JSON.parse(message.data));
     };
 
     socket.onopen = function() {
       socket.send(JSON.stringify({ type: 'OBSERVE' }));
+    };
+
+    socket.onclose = function() {
+      emit({ type: 'WS_CLOSED' });
     };
 
     // the subscriber must return an unsubscribe function
@@ -31,11 +34,11 @@ function createSocketChannel(socket) {
   }, buffers.sliding(10));
 }
 
-function* handleEvent({type, data}) {
+function* handleMessage({type, data}) {
   switch(type) {
     case 'HISTORY':
-      yield all(data.map((event) => {
-        return handleEvent(event);
+      yield all(data.map((message) => {
+        return handleMessage(message);
       }));
       break;
     case 'EVENT':
@@ -45,10 +48,13 @@ function* handleEvent({type, data}) {
       });
       break;
     case 'RESET':
-      yield put(wsActions.reset());
+      yield put({ type, data });
+      break;
+    case 'WS_CLOSED':
+      console.error('WebSocket connection closed');
       break;
     default:
-      console.log('Unknown socket event: ' + { type, data });
+      console.log('Unknown socket message type: ' + type);
       break;
   }
 }
@@ -57,6 +63,6 @@ export default function*() {
   const socket = yield call(createConnection);
   const socketChannel = yield call(createSocketChannel, socket);
 
-  yield fork(takeEvery, 'AUTH', ws.authTeam(socket));
-  yield fork(takeEvery, socketChannel, handleEvent);
+  yield spawn(takeEvery, 'AUTH', ws.authTeam(socket));
+  yield spawn(takeEvery, socketChannel, handleMessage);
 }

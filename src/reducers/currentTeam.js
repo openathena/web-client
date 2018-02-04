@@ -5,7 +5,7 @@ export default (state = { id: '', submarine: {} }, { type, payload }) => {
         id: payload.username,
         submarine: state.submarine
       };
-    case 'SUBMARINE_CREATED':
+    case 'SUBMARINE_UPDATED':
       return {
         id: state.id,
         submarine: payload.data

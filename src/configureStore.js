@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import reducer from './reducers';
+import gameReducer from './reducers';
 import sagas from './sagas';
 import { reducer as reduxFormReducer } from 'redux-form';
 import { routerReducer, routerMiddleware, push } from 'react-router-redux';
@@ -26,7 +26,7 @@ export default function configureStore(initialState) {
 
   const store = createStore(
     combineReducers({
-      game: reducer,
+      game: gameReducer,
       form: reduxFormReducer,
       router: routerReducer
     }),
